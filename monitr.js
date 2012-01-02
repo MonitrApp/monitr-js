@@ -62,28 +62,7 @@ var Monitr = (function( undefined ){
 			this.options = monitr.extend( this.options, options );
 			
 		},
-		log: function(){
-			
-			var args = arguments,
-				argLen = args.length,
-				data,
-				i = 0;
-			
-			if( argLen === 1 ){
-				data = args[0];
-			}else{
-				data = {
-					message: args[ i++ ],
-					code: args[ i++ ] || this.options.defaultErrorCode,
-					file: args[ i++ ] || "",
-					line: args[ i++ ] || ""
-				};
-			}
-			data = monitr.extend(data, {
-				lang: "js",
-				apiKey: this.options.apiKey,
-				domain: this.options.domain
-			});
+		log: (function(){
 			
 			var hash = "iframe" + Math.round(Math.random() * 10000000000000000),
 				frame,
@@ -110,26 +89,55 @@ var Monitr = (function( undefined ){
 			
 			form.id = "form" + hash;
 			
-			for( var key in data ){
-				
-				try {
-					field = document.createElement('<input name="' + key + '"></input>');
-				} catch (ex) {
-					field = document.createElement("input");
-					field.name = key;
-				}
-				
-				field.type = "hidden";
-				field.value = data[key];
-				form.appendChild(field);
-				
-			}
+			
 			
 			document.body.appendChild( frame );
 			document.body.appendChild( form );
+
+			return function(){
+				
+				var args = arguments,
+					argLen = args.length,
+					data,
+					i = 0;
+					
+				if( argLen === 1 ){
+					data = args[0];
+				}else{
+					data = {
+						message: args[ i++ ],
+						code: args[ i++ ] || monitr.options.defaultErrorCode,
+						file: args[ i++ ] || "",
+						line: args[ i++ ] || ""
+					};
+				}
+				data = monitr.extend(data, {
+					lang: "js",
+					apiKey: monitr.options.apiKey,
+					domain: monitr.options.domain
+				});
+
+				form.innerHTML = "";
+
+				for( var key in data ){
+				
+					try {
+						field = document.createElement('<input name="' + key + '"></input>');
+					} catch (ex) {
+						field = document.createElement("input");
+						field.name = key;
+					}
+					
+					field.type = "hidden";
+					field.value = data[key];
+					form.appendChild(field);
+					
+				}
+
 			
-			document.getElementById( "form" + hash ).submit();
-		},
+				document.getElementById( "form" + hash ).submit();
+			};
+		})(),
 		errorLevel: function( opt_level ){
 			
 			if( opt_level === undefined ){
