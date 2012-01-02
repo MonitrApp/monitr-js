@@ -12,11 +12,11 @@ var Monitr = (function( undefined ){
 		VERSION: "0.0.1",
 		
 		ERROR_CODES: {
-			error: 1,
-			warning: 2,
-			parse: 4,
-			notice: 8,
-			deprecated: 8192
+			error: "error",
+			warning: "warning",
+			parse: "parse",
+			notice: "notice",
+			deprecated: "deprecated"
 		}
 	};
 	
