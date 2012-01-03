@@ -13,6 +13,23 @@ How To Use
     });
 
 
+**API Key**
+
+
+Here you get your API-Key:
+
+http://monitr.io/request-api-key
+
+
+
+
+**Domain Key**
+
+Go to your profiles ( http://monitr.io/profiles ).
+
+![Screenshot](http://d3j5vwomefv46c.cloudfront.net/photos/full/488321426.png?Expires=1325616954&Key-Pair-Id=APKAIYVGSUJFNRFZBBTA&Signature=Lqzc2jOsLWwyztJMW9ZVvJdX~LLh9Oe~KfaeD9QtCLjQAVM6Q6M8opbNsFMpdUjWgWzB46EwyTavo0UDBsEIQdJioBIqkilIq7zXI8ZSCBPil1-cypD2dC6N2b~0Vh8vIhHbpVJECq9AqZUXsco3bttsg~2iSEabAD0J~Bv2X5E_)
+
+
 Other Setup Options:
 
 * `defaultErrorCode` – the default errorcode ( default: Monitr.ERROR_CODES.warning )
