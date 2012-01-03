@@ -9,7 +9,7 @@ var Monitr = (function( undefined ){
 	monitr = {
 		API_URL: "http://api.monitr.io/1/",
 		
-		VERSION: "0.0.1",
+		VERSION: "0.0.2",
 		
 		ERROR_CODES: {
 			error: "error",
@@ -48,99 +48,69 @@ var Monitr = (function( undefined ){
 	monitr.extend({
 				
 		options: {
-			errorLevel: monitr.ERROR_CODES.warning,
-			defaultErrorCode: monitr.ERROR_CODES.warning
+			defaultErrorCode: monitr.ERROR_CODES.warning,
+			overrideErrorHandler: true
 		},
 		
 		setup: function( options ){
 			
 			this.options = monitr.extend( this.options, options );
 			
+			if( this.options.overrideErrorHandler ){
+				window.onerror = function( msg, url, line ){
+					Monitr.log({
+						message: msg,
+						file: url,
+						line: line,
+						code: monitr.ERROR_CODES.error
+					});
+				}
+			}
 		},
-		log: (function(){
+		log: function(){
 			
-			var hash = "iframe" + Math.round(Math.random() * 10000000000000000),
-				frame,
-				form,
-				field;
-			
-			try{
-				frame = document.createElement('<iframe name="' + h + '"></iframe>');
-			}catch(e){
-				frame = document.createElement('iframe');
-				frame.name = hash;
-			}
-			
-			frame.id = hash;
-			frame.style.visibility = "hidden";
-			frame.style.height = "1px";
-			frame.style.width = "1px";
-			
-			form = document.createElement("form");
-			
-			form.action = monitr.API_URL + "log";
-			form.method = "post";
-			form.target = hash;
-			
-			form.id = "form" + hash;
-			
-			
-			
-			document.body.appendChild( frame );
-			document.body.appendChild( form );
-
-			return function(){
+			var args = arguments,
+				argLen = args.length,
+				data,
+				dataUrl = '';
+				i = 0;
 				
-				var args = arguments,
-					argLen = args.length,
-					data,
-					i = 0;
-					
-				if( argLen === 1 ){
-					data = args[0];
-				}else{
-					data = {
-						message: args[ i++ ],
-						code: args[ i++ ] || monitr.options.defaultErrorCode,
-						file: args[ i++ ] || "",
-						line: args[ i++ ] || ""
-					};
-				}
-				data = monitr.extend(data, {
-					lang: "js",
-					apiKey: monitr.options.apiKey,
-					domain: monitr.options.domain
-				});
-
-				form.innerHTML = "";
-
-				for( var key in data ){
-				
-					try {
-						field = document.createElement('<input name="' + key + '"></input>');
-					} catch (ex) {
-						field = document.createElement("input");
-						field.name = key;
-					}
-					
-					field.type = "hidden";
-					field.value = data[key];
-					form.appendChild(field);
-					
-				}
-
-			
-				document.getElementById( "form" + hash ).submit();
-			};
-		})(),
-		errorLevel: function( opt_level ){
-			
-			if( opt_level === undefined ){
-				return this.options.errorLevel;
+			if( argLen === 1 ){
+				data = args[0];
+			}else{
+				data = {
+					message: args[ i++ ],
+					code: args[ i++ ] || monitr.options.defaultErrorCode,
+					file: args[ i++ ] || "",
+					line: args[ i++ ] || ""
+				};
 			}
+			data = monitr.extend(data, {
+				lang: "Javascript",
+				api_key: monitr.options.apiKey,
+				domain: monitr.options.domainKey
+			});
 			
-			this.options.errorLevel = opt_level;
+			for( var key in data )
+				dataUrl += key + "=" + encodeURIComponent( data[ key ] ) + "&";
 			
+			
+			reqwest({
+    			url: monitr.API_URL + 'log?' + dataUrl + 'callback=?',
+			    type: 'jsonp'
+			})
+			
+		},
+		
+		
+		warn: function( msg ){
+			monitr.log( msg, monitr.ERROR_CODES.warn );
+		},
+		error: function( msg ){
+			monitr.log( msg, monitr.ERROR_CODES.error );
+		},
+		info: function( msg ){
+			monitr.log( msg, monitr.ERROR_CODES.notice );
 		}
 		
 	});

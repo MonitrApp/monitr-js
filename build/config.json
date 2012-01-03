@@ -3,6 +3,7 @@
     "DIST_DIR": "./"
   , "monitr": [
         "./src/copyright.js"
+      , "./src/reqwest.js"
       , "./src/monitr.js"
     ]
   }
