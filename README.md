@@ -9,15 +9,14 @@ How To Use
 
     Monitr.setup({
         "apiKey": "...",
-        "domain": "..."
+        "domainKey": "..."
     });
 
 
 Other Setup Options:
 
 * `defaultErrorCode` – the default errorcode ( default: Monitr.ERROR_CODES.warning )
-* `errorLevel` – All errors below this level won't get logged (Monitr.ERROR_CODES.warning is the default value).
-
+* `overrideErrorHandler` - override the window.onerror handler ( default: true )
 
 **Log an error:**
 
@@ -33,7 +32,12 @@ or
     Monitr.log("Something bad happened :(", Monitr.ERROR_CODES.error);
     
     Monitr.log("Another bad thing happened :S"); // default error code
-
+    
+    Monitr.warn("Some warning");
+    
+    Monitr.error("Some error");
+    
+    Monitr.info("Some info");
 
 
 Error Codes
@@ -46,13 +50,6 @@ Error Codes
         notice
         deprecated
 
-**Set Error level**
-
-All errors below this level won't get logged (Monitr.ERROR_CODES.warning is the default value).
-
-    Monitr.errorLevel( Monitr.ERROR_CODES.notice );
-    
-    var errorLevel = Monitr.errorLevel();
 
 
 
